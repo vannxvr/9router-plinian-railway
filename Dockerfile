@@ -1,4 +1,11 @@
-FROM decolua/9router:0.5.45
+FROM decolua/9router:0.5.75
+# Bumped from 0.5.45 (2026-07-30). Confirmed via 9router's own CHANGELOG.md
+# that v0.5.65 fixed "explicitly bundle node-machine-id into standalone Docker
+# runtime image" -- a real Docker-runtime packaging bug, directly relevant
+# since this template requires MACHINE_ID_SALT (internal instance ID hashing,
+# which depends on node-machine-id). 0.5.45 predates that fix by 5 releases.
+# Also picks up subsequent security/auth fixes (SSRF guards, session cookie
+# maxAge hardening) through 0.5.75.
 
 # 9router's own Dockerfile already sets PORT/HOSTNAME as ENV defaults and
 # handles volume permissions correctly at container start (its entrypoint
