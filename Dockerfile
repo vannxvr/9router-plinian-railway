@@ -9,7 +9,7 @@ ARG PLINIAN_REF=master
 ARG NPM_REGISTRY=https://registry.npmjs.org/
 RUN git clone --depth 1 --branch "${PLINIAN_REF}" "${PLINIAN_REPO}" /app
 
-RUN --mount=type=cache,id=s/2f3b29ea-d004-4768-8e9a-77623cb89992-plinian-npm-cache,target=/root/.npm \
+RUN --mount=type=cache,id=s/e055b6a1-8b2d-4cd7-9c69-dce295773eec-/root/.npm,target=/root/.npm \
     npm install --registry="${NPM_REGISTRY}" --fetch-retries=5 \
       --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 \
       --fetch-retry-maxtimeout=120000 --fetch-timeout=300000
@@ -17,7 +17,7 @@ RUN --mount=type=cache,id=s/2f3b29ea-d004-4768-8e9a-77623cb89992-plinian-npm-cac
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-RUN --mount=type=cache,id=s/2f3b29ea-d004-4768-8e9a-77623cb89992-plinian-npm-cache,target=/root/.npm \
+RUN --mount=type=cache,id=s/e055b6a1-8b2d-4cd7-9c69-dce295773eec-/root/.npm,target=/root/.npm \
     mkdir -p /opt/lazy-runtime && cd /opt/lazy-runtime && \
     npm init -y >/dev/null && \
     npm install --no-save --registry="${NPM_REGISTRY}" \
