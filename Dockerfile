@@ -42,10 +42,8 @@ COPY --from=builder /app/node_modules/node-machine-id ./node_modules/node-machin
 COPY --from=builder /opt/lazy-runtime/node_modules/. ./node_modules/
 
 RUN mkdir -p /app/data /app/data-home && chown -R node:node /app
-RUN apk add --no-cache su-exec ffmpeg && \
-    printf '#!/bin/sh\\nchown -R node:node /app/data /app/data-home 2>/dev/null\\nexec su-exec node "$@"\\n' > /entrypoint.sh && \
-    chmod +x /entrypoint.sh
+RUN apk add --no-cache su-exec ffmpeg
 
 EXPOSE 20128
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "-c", "chown -R node:node /app/data /app/data-home 2>/dev/null || true; exec su-exec node \"$@\"", "--"]
 CMD ["node", "custom-server.js"]
