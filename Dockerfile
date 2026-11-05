@@ -1,16 +1,16 @@
 # syntax=docker/dockerfile:1.7
 ARG NODE_IMAGE=node:22.23.4-alpine
-FROM \${NODE_IMAGE} AS builder
+FROM ${NODE_IMAGE} AS builder
 WORKDIR /app
 RUN apk add --no-cache git python3 make g++ linux-headers
 
 ARG PLINIAN_REPO=https://github.com/vannxvr/9router-plinian.git
 ARG PLINIAN_REF=master
 ARG NPM_REGISTRY=https://registry.npmjs.org/
-RUN git clone --depth 1 --branch "\${PLINIAN_REF}" "\${PLINIAN_REPO}" /app
+RUN git clone --depth 1 --branch "${PLINIAN_REF}" "${PLINIAN_REPO}" /app
 
 RUN --mount=type=cache,id=plinian-npm-cache,target=/root/.npm \
-    npm install --registry="\${NPM_REGISTRY}" --fetch-retries=5 \
+    npm install --registry="${NPM_REGISTRY}" --fetch-retries=5 \
       --fetch-retry-factor=2 --fetch-retry-mintimeout=10000 \
       --fetch-retry-maxtimeout=120000 --fetch-timeout=300000
 
@@ -20,12 +20,12 @@ RUN npm run build
 RUN --mount=type=cache,id=plinian-npm-cache,target=/root/.npm \
     mkdir -p /opt/lazy-runtime && cd /opt/lazy-runtime && \
     npm init -y >/dev/null && \
-    npm install --no-save --registry="\${NPM_REGISTRY}" \
+    npm install --no-save --registry="${NPM_REGISTRY}" \
       --fetch-retries=5 --fetch-retry-factor=2 \
       --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000 \
       --fetch-timeout=300000 wreq-js playwright-core
 
-FROM \${NODE_IMAGE} AS runner
+FROM ${NODE_IMAGE} AS runner
 WORKDIR /app
 ENV NODE_ENV=production PORT=20128 HOSTNAME=0.0.0.0 NEXT_TELEMETRY_DISABLED=1 DATA_DIR=/app/data
 
